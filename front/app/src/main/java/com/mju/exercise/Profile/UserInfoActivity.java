@@ -1,8 +1,7 @@
-package com.mju.exercise;
+package com.mju.exercise.Profile;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,11 +13,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.annotations.SerializedName;
 import com.mju.exercise.Domain.ProfileDTO;
 import com.mju.exercise.HttpRequest.RetrofitUtil;
 import com.mju.exercise.Preference.PreferenceUtil;
+import com.mju.exercise.Profile.EditProfileActivity;
+import com.mju.exercise.R;
 
 import retrofit2.Call;
 import retrofit2.Callback;

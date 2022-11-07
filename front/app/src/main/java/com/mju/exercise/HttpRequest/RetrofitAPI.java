@@ -2,9 +2,12 @@ package com.mju.exercise.HttpRequest;
 
 import com.mju.exercise.Domain.ApiResponseDTO;
 import com.mju.exercise.Domain.JwtDTO;
+import com.mju.exercise.Domain.OpenMatchDTO;
 import com.mju.exercise.Domain.ProfileDTO;
 import com.mju.exercise.Domain.SignInDTO;
 import com.mju.exercise.Domain.SignUpDTO;
+
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -51,4 +54,15 @@ public interface RetrofitAPI {
 
     @GET("/api/auth/tokenCheck")
     Call<Boolean> tokenCheck();
+
+
+    //오픈매치 가져오기 종목별
+    @Headers("Content-Type: application/json")
+    @GET("/api/match/openMatchList/{sportType}")
+    Call<List<OpenMatchDTO>> loadOpenMatchesSportType(@Path(value = "sportType", encoded = true) String sportType);
+    //오픈매치 가져오기 전부
+    @Headers("Content-Type: application/json")
+    @GET("/api/match/openMatchList")
+    Call<List<OpenMatchDTO>> loadOpenMatchesAll();
+
 }

@@ -1,10 +1,9 @@
-package com.mju.exercise;
+package com.mju.exercise.Profile;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.FileUtils;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +16,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,9 +23,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.mju.exercise.Domain.ApiResponseDTO;
 import com.mju.exercise.Domain.ProfileDTO;
-import com.mju.exercise.HttpRequest.RetrofitAPI;
 import com.mju.exercise.HttpRequest.RetrofitUtil;
 import com.mju.exercise.Preference.PreferenceUtil;
+import com.mju.exercise.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,8 +39,6 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EditProfileActivity extends AppCompatActivity {
 

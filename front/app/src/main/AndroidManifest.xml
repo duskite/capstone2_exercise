@@ -42,9 +42,10 @@
         <activity android:name=".Sign.SignInActivity" />
         <activity android:name=".Sign.SignUpActivity" />
         <activity android:name=".Sign.ForgetPwActivity" />
-        <activity android:name=".UserInfoActivity" />
-        <activity android:name=".EditProfileActivity" />
+        <activity android:name=".Profile.UserInfoActivity" />
+        <activity android:name=".Profile.EditProfileActivity" />
         <activity android:name=".Sign.ChangePwActivity" />
+        <activity android:name=".OpenMatch.OpenMatchActivity" />
         <activity android:name=".MapActivity"/>
     </application>
 

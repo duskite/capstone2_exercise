@@ -6,8 +6,6 @@ import com.example.spring.DTO.Member;
 import com.example.spring.DTO.OpenMatchDTO;
 import com.example.spring.DTO.Profile;
 import com.example.spring.Service.MatchService;
-import com.example.spring.Service.MemberService;
-import com.example.spring.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
