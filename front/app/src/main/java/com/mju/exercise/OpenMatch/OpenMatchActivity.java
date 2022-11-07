@@ -66,6 +66,8 @@ public class OpenMatchActivity extends AppCompatActivity {
                 }
 
                 case R.id.open_match_create:
+                    OpenMatchCreate openMatchCreate = new OpenMatchCreate();
+                    openMatchCreate.show(getSupportFragmentManager(), "create");
                     return true;
                 case R.id.chat_list:
                     return true;

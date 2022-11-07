@@ -64,7 +64,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
         viewHolder.tvArticle.setText(openMatchDTO.getArticle());
         viewHolder.tvSubect.setText(openMatchDTO.getSubject());
         viewHolder.tvSportType.setText(openMatchDTO.getSportType());
-        viewHolder.tvPersonnel.setText(openMatchDTO.getPersonnel());
+        viewHolder.tvPersonnel.setText(String.valueOf(openMatchDTO.getPersonnel()));
         viewHolder.tvPlayDateTime.setText(String.valueOf(openMatchDTO.getPlayDateTime()));
         viewHolder.tvOpenUserId.setText(openMatchDTO.getOpenUserId());
 

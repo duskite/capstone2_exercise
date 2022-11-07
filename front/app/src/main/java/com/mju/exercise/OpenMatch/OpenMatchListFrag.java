@@ -79,8 +79,6 @@ public class OpenMatchListFrag extends Fragment {
         textView.setText(sportTypeToString(mSportType));
 
         customListView = (ListView) view.findViewById(R.id.listViewOpenMatchList);
-        openMatchAdapter = new OpenMatchAdapter(getContext(), openMatches);
-        customListView.setAdapter(openMatchAdapter);
 
         // Inflate the layout for this fragment
         return view;
@@ -94,6 +92,8 @@ public class OpenMatchListFrag extends Fragment {
             public void onResponse(Call<List<OpenMatchDTO>> call, Response<List<OpenMatchDTO>> response) {
                 if(response.isSuccessful()){
                     openMatches = (ArrayList<OpenMatchDTO>) response.body();
+                    openMatchAdapter = new OpenMatchAdapter(getContext(), openMatches);
+                    customListView.setAdapter(openMatchAdapter);
                 }
             }
 
