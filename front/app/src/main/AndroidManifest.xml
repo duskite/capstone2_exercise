@@ -46,6 +46,9 @@
         <activity android:name=".Sign.ChangePwActivity" />
         <activity android:name=".MapActivity" />
         <activity android:name=".ChatActivity" />
+        <activity android:name=".Calendar.CalendarActivity" />
+        <activity android:name=".Calendar.MemoActivity" />
+        <activity android:name=".Calendar.MemofragmentActivity" />
         <activity android:name=".OpenMatch.OpenMatchActivity" />
         <activity android:name=".PopupMapActivity"/>
 

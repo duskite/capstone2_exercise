@@ -1,87 +1,116 @@
 package com.mju.exercise;
 
-import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mju.exercise.R;
-
-import java.util.List;
-
-
-
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> {
-    private List<ChatData> mDataset;
-    private String myNickName;
-
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView TextView_nickname;
-        public TextView TextView_msg;
-        public View rootView;
-        public MyViewHolder(View v) {
-            super(v);
-            TextView_nickname = v.findViewById(R.id.TextView_nickname);
-            TextView_msg = v.findViewById(R.id.TextView_msg);
-            rootView = v;
-
-        }
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 
+public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private ArrayList<ChatData.Comment> comments;
+    private String otherNickname;
+    private String myId;
+
+    public ChatAdapter(ArrayList<ChatData.Comment> comments,String myId, String otherName) {
+        this.comments = comments;
+        this.myId = myId;
+        this.otherNickname = otherName;
     }
 
-    public ChatAdapter(List<ChatData> myDataset, Context context, String myNickName) {
-        //{"1","2"}
-        mDataset = myDataset;
-        this.myNickName = myNickName;
+    private int MINE_CHAT = 0;
+    private int OTHER_CHAT = 1;
+
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        if (viewType == MINE_CHAT) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chatting_me, parent, false);
+            return new MineViewHolder(view);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chatting_you, parent, false);
+            return new OtherViewHolder(view);
+        }
     }
 
     @Override
-    public ChatAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                       int viewType) {
-        LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_chat, parent, false);
-
-        MyViewHolder vh = new MyViewHolder(v);
-        return vh;
-    }
-
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        ChatData chat = mDataset.get(position);
-
-        holder.TextView_nickname.setText(chat.getNickname());
-        holder.TextView_msg.setText(chat.getMsg());
-
-        if(chat.getNickname().equals(this.myNickName)) {
-            holder.TextView_msg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-            holder.TextView_nickname.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-        } //내 닉네임 확인
-        else {
-            holder.TextView_msg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            holder.TextView_nickname.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        ChatData.Comment comment = comments.get(position);
+        if (holder instanceof MineViewHolder) {
+            ((MineViewHolder) holder).bind(comment);
+        } else {
+            ((OtherViewHolder) holder).bind(comment);
         }
-
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-
-        //삼항 연산자
-        return mDataset == null ? 0 :  mDataset.size();
+        return comments.size();
     }
 
-    public ChatData getChat(int position) {
-        return mDataset != null ? mDataset.get(position) : null;
+    @Override
+    public int getItemViewType(int position) {
+        if (comments.get(position).senderId.equals(myId)) {
+            return MINE_CHAT;
+        } else {
+            return OTHER_CHAT;
+        }
     }
 
-    public void addChat(ChatData chat) {
-        mDataset.add(chat);
-        notifyItemInserted(mDataset.size()-1); //갱신
+    public class MineViewHolder extends RecyclerView.ViewHolder{
+
+        TextView show_msg;
+        TextView time_msg;
+
+        public MineViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            show_msg = itemView.findViewById(R.id.show_message);
+            time_msg = itemView.findViewById(R.id.txt_seen);
+        }
+
+        public void bind(ChatData.Comment comment) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyy.MM.dd HH:mm");
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+            Date date = new Date((long)comment.timestamp);
+            String time = simpleDateFormat.format(date);
+            show_msg.setText(comment.message);
+            time_msg.setText(time);
+        }
     }
 
+    public class OtherViewHolder extends RecyclerView.ViewHolder{
+
+        TextView show_msg;
+        TextView time_msg;
+        TextView name_tv;
+
+        public OtherViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            show_msg = itemView.findViewById(R.id.show_message);
+            time_msg = itemView.findViewById(R.id.txt_seen);
+            name_tv = itemView.findViewById(R.id.name_tv);
+        }
+
+        public void bind(ChatData.Comment comment) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyy.MM.dd HH:mm");
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+            Date date = new Date((long)comment.timestamp);
+            String time = simpleDateFormat.format(date);
+            show_msg.setText(comment.message);
+            time_msg.setText(time);
+            name_tv.setText(comment.senderId);
+        }
+    }
 }

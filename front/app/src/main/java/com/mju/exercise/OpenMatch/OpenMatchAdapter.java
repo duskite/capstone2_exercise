@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.mju.exercise.ChatActivity;
 import com.mju.exercise.Domain.MatchingDTO;
 import com.mju.exercise.Domain.OpenMatchDTO;
 import com.mju.exercise.Domain.ProfileDTO;
@@ -78,7 +79,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
         public TextView tvPlayDateTime;
         public TextView tvDistanceToMe;
 
-        public Button btnDetailOnMap, btnDetailClick;
+        public Button btnDetailOnMap, btnDetailClick, btnChatJoin;
 
         public Double myLat, myLng;
         public Double mapLat, mapLng;
@@ -130,6 +131,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
         viewHolder.tvArticle = (TextView) expandableLayout.secondLayout.findViewById(R.id.detailArticle);
         viewHolder.btnDetailOnMap = (Button) convertView.findViewById(R.id.detailOnMap);
         viewHolder.btnDetailClick = (Button) convertView.findViewById(R.id.detailJoin);
+        viewHolder.btnChatJoin = (Button) convertView.findViewById(R.id.ChatJoin);
         viewHolder.profileDTOs = new ArrayList<>();
         viewHolder.customListView = (RecyclerView) convertView.findViewById(R.id.detailProfileList);
 
@@ -159,10 +161,27 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
             viewHolder.isCanJoin = false;
             viewHolder.btnDetailClick.setText("로그인 필요");
             viewHolder.btnDetailClick.setEnabled(false);
+            viewHolder.btnChatJoin.setText("로그인 필요");
+            viewHolder.btnChatJoin.setEnabled(false);
         }else{
             //오픈 매치에 참가할 수 있도록 하는 기능
             viewHolder.btnDetailClick.setText("참여하기");
             viewHolder.btnDetailClick.setEnabled(true);
+            viewHolder.btnChatJoin.setText("채팅방 참가하기");
+            viewHolder.btnChatJoin.setEnabled(true);
+
+            viewHolder.btnChatJoin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    for (ProfileDTO userNick : viewHolder.profileDTOs){
+//                        Log.i("HH_LOG", "onResponse: smallp = "+ userNick.getNickname());
+//                    }
+                    Intent intent = new Intent(getContext(), ChatActivity.class);
+                    intent.putExtra("groupTitle",openMatchDTO.getArticle());
+                    getContext().startActivity(intent);
+                }
+            });
+
             viewHolder.btnDetailClick.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

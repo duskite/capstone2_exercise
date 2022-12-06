@@ -20,6 +20,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.mju.exercise.ChatActivity;
 import com.mju.exercise.Domain.ProfileDTO;
 import com.mju.exercise.HttpRequest.RetrofitUtil;
 import com.mju.exercise.Preference.PreferenceUtil;
@@ -34,8 +35,9 @@ public class UserInfoActivity extends AppCompatActivity {
     private Context mContext;
     private ImageView mImgProfile;
     private TextView mTxtUserName, mTxtAddress, mTxtFavoriteSport, mTxtProfileMsg, mTxtFavoriteDay;
-    private Button btnLogout;
+    private Button btnLogout,btnOneChatJoin;
     private ExtendedFloatingActionButton mbtnEditProfile;
+    private String userId;
 
     private PreferenceUtil preferenceUtil;
     private RetrofitUtil retrofitUtil;
@@ -82,6 +84,10 @@ public class UserInfoActivity extends AppCompatActivity {
         btnLogout = (Button) findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(setOnClickListener);
 
+        //1대1채팅 버튼
+        btnOneChatJoin = (Button) findViewById(R.id.btnOneChat);
+        btnOneChatJoin.setOnClickListener(setOnClickListener);
+
         preferenceUtil = PreferenceUtil.getInstance(getApplicationContext());
         retrofitUtil = RetrofitUtil.getInstance();
 
@@ -91,7 +97,12 @@ public class UserInfoActivity extends AppCompatActivity {
 
         //다른 사람의 프로필도 볼 수 있도록 하기 위하여 인텐트에 유저 아이디를 담어서 넘기도록 함
         Intent intent = getIntent();
-        String userId = intent.getStringExtra("userId");
+        userId = intent.getStringExtra("userId");
+
+        //만약 현재 보는 프로필과 내 유저아이디가 같다면 채팅 비활성화
+        if(userId.equals(preferenceUtil.getString("userId"))){
+            btnOneChatJoin.setVisibility(View.GONE);
+        }
         //만약 현재 보는 프로필과 내 유저아이디가 다르다면 로그아웃과 수정하기 비활성화
         if(!userId.equals(preferenceUtil.getString("userId"))){
             btnLogout.setVisibility(View.GONE);
@@ -242,6 +253,19 @@ public class UserInfoActivity extends AppCompatActivity {
 
                     finish();
                     break;
+
+                case R.id.btnOneChat:
+                    Intent intent1 = new Intent(getApplicationContext(), ChatActivity.class);
+                    intent1.putExtra("otherId",userId);
+                    intent1.putExtra("otherNickname",mTxtUserName.getText());
+
+                  startActivity(intent1);
+                  finish();
+                  break;
+
+
+
+
             }
 
 

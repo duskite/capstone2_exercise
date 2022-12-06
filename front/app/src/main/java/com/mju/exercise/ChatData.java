@@ -1,23 +1,16 @@
 package com.mju.exercise;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ChatData {
-    private String msg;
-    private String nickname;
+    public Map<String,Boolean> usersId = new HashMap<>();
+    public Map<String,Comment> comments = new HashMap<>();
 
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public static class Comment {
+        public String senderId;
+        public String message;
+        public Object timestamp;
     }
 }

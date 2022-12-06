@@ -1,25 +1,21 @@
 package com.mju.exercise.Profile;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +41,6 @@ import com.mju.exercise.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -320,6 +315,11 @@ public class EditProfileActivity extends AppCompatActivity {
                 profileDTO.setNickname(edtNickname.getText().toString());
                 profileDTO.setIntroduce(edtProfileMsg.getText().toString());
                 profileDTO.setRegion(tvRegion.getText().toString());
+
+                SharedPreferences sharedPreferences= getSharedPreferences("userInfo", MODE_PRIVATE);
+                SharedPreferences.Editor editor= sharedPreferences.edit();
+                editor.putString("userNickname",edtNickname.getText().toString()); // key,value 형식으로 저장
+                editor.commit();
 
                 //이미지가 있으면 이미지 전송
                 if (imgUri != null) {

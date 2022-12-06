@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.mju.exercise.Calendar.CalendarActivity;
 import com.mju.exercise.HttpRequest.RetrofitUtil;
 import com.mju.exercise.OpenMatch.OpenMatchActivity;
 import com.mju.exercise.Preference.PreferenceUtil;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+                Intent intent = new Intent(MainActivity.this, CalendarActivity.class);
                 startActivity(intent);
             }
         });
