@@ -99,6 +99,13 @@ public class OpenMatchJoinedFrag extends Fragment implements OpenMatchFilter {
                 if(response.isSuccessful()){
                     openMatches = (ArrayList<OpenMatchDTO>) response.body();
                     openMatchAdapter = new OpenMatchAdapter(getContext(), openMatches);
+                    openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
+                        @Override
+                        public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                            openMatches.remove(openMatchDTO);
+                            openMatchAdapter.notifyDataSetChanged();
+                        }
+                    });
                     customListView.setAdapter(openMatchAdapter);
                 }
             }
