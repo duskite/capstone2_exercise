@@ -72,6 +72,14 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if(openMatchAdapter != null){
+            openMatchAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         retrofitUtil = RetrofitUtil.getInstance();
@@ -97,7 +105,8 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                     openMatchAdapter = new OpenMatchAdapter(getContext(), openMatches);
                     openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                         @Override
-                        public void rootViewNotify() {
+                        public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                            openMatches.remove(openMatchDTO);
                             openMatchAdapter.notifyDataSetChanged();
                         }
                     });
@@ -138,12 +147,18 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                           Status.FavDayType favDayType,
                           LocalDateTime localDateTime) {
 
+        //필터링할 오픈매치 없으면 그냥 리턴
+        if(openMatches == null){
+            return;
+        }
+
         if(filterTypeJoin == Status.FilterTypeJoin.JOIN_DEFAULT && filterTypeDay == Status.FilterTypeDay.DAY_DEFAULT && filterTypeDistance == Status.FilterTypeDistance.DISTANCE_DEFAULT){
             //모두 디폴트면 기존 리스트 그대로 보여줌
             openMatchAdapter = new OpenMatchAdapter(getContext(), openMatches);
             openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                 @Override
-                public void rootViewNotify() {
+                public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                    openMatches.remove(openMatchDTO);
                     openMatchAdapter.notifyDataSetChanged();
                 }
             });
@@ -202,7 +217,8 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                 openMatchAdapter = new OpenMatchAdapter(getContext(), list);
                 openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                     @Override
-                    public void rootViewNotify() {
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                        list.remove(openMatchDTO);
                         openMatchAdapter.notifyDataSetChanged();
                     }
                 });
@@ -221,7 +237,8 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                 openMatchAdapter = new OpenMatchAdapter(getContext(), list);
                 openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                     @Override
-                    public void rootViewNotify() {
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                        list.remove(openMatchDTO);
                         openMatchAdapter.notifyDataSetChanged();
                     }
                 });
@@ -240,7 +257,8 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                 openMatchAdapter = new OpenMatchAdapter(getContext(), list);
                 openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                     @Override
-                    public void rootViewNotify() {
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                        list.remove(openMatchDTO);
                         openMatchAdapter.notifyDataSetChanged();
                     }
                 });
@@ -261,7 +279,8 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                 openMatchAdapter = new OpenMatchAdapter(getContext(), list);
                 openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                     @Override
-                    public void rootViewNotify() {
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                        list.remove(openMatchDTO);
                         openMatchAdapter.notifyDataSetChanged();
                     }
                 });
@@ -281,7 +300,8 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                 openMatchAdapter = new OpenMatchAdapter(getContext(), list);
                 openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                     @Override
-                    public void rootViewNotify() {
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                        list.remove(openMatchDTO);
                         openMatchAdapter.notifyDataSetChanged();
                     }
                 });
@@ -301,7 +321,8 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                 openMatchAdapter = new OpenMatchAdapter(getContext(), list);
                 openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                     @Override
-                    public void rootViewNotify() {
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                        list.remove(openMatchDTO);
                         openMatchAdapter.notifyDataSetChanged();
                     }
                 });

@@ -81,7 +81,7 @@ public class JpaMatchRepository implements MatchRepository{
 
     //유저 아이디로 매칭 목록 가져옴
     @Override
-    public List<MatchingDTO> findAllMatchingByUserId(Long userIndex) {
+    public List<MatchingDTO> findAllMatchingByUserIdx(Long userIndex) {
         return em.createQuery("select m from MatchingDTO m where m.userIndex=:userIndex ", MatchingDTO.class)
                 .setParameter("userIndex", userIndex)
                 .getResultList();
@@ -118,6 +118,12 @@ public class JpaMatchRepository implements MatchRepository{
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public void deleteAllMatchingByMatchIdx(Long matchIdx){
+        em.createQuery("delete from MatchingDTO m where m.openMatchId=:matchIdx", MatchingDTO.class)
+                .setParameter("matchIdx", matchIdx);
     }
 
     public List<MatchingDTO> isExistMatching(MatchingDTO matchingDTO){

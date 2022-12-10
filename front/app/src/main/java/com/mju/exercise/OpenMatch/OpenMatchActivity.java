@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -60,6 +61,9 @@ public class OpenMatchActivity extends AppCompatActivity {
     private Status.FavDayType mFavDay = Status.FavDayType.DEFAULT;
 
     private OpenMatchListFrag openMatchListFrag;
+    private OpenMatchJoinedFrag openMatchJoinedFrag;
+    private OpenMatchCreatedFrag openMatchCreatedFrag;
+    private Status.FragType fragType = Status.FragType.LIST;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +75,14 @@ public class OpenMatchActivity extends AppCompatActivity {
         Log.d("인텐트체크", String.valueOf(intent.getIntExtra("sport", 0)));
 
         openMatchListFrag = OpenMatchListFrag.newInstance(sportType);
+        openMatchCreatedFrag = OpenMatchCreatedFrag.newInstance();
+        openMatchJoinedFrag = OpenMatchJoinedFrag.newInstance();
+        //첫 시작은 LIST 프래그먼트
+        fragType = Status.FragType.LIST;
 
         init();
         checkGPS();
         bottomNavigationView.setSelectedItemId(R.id.open_match_list);
-
-
     }
 
 
@@ -115,7 +121,15 @@ public class OpenMatchActivity extends AppCompatActivity {
                             mFilterTypeDistance = filterTypeDistance;
                             mFilterTypeJoin = filterTypeJoin;
                             Log.d("필터", "setFilter");
-                            openMatchListFrag.setFilter(filterTypeJoin, filterTypeDistance, filterTypeDay, distanceDiff, favDayType, localDateTime);
+
+                            if(fragType == Status.FragType.LIST){
+                                openMatchListFrag.setFilter(filterTypeJoin, filterTypeDistance, filterTypeDay, distanceDiff, favDayType, localDateTime);
+                            }else if(fragType == Status.FragType.OPENED){
+                                openMatchCreatedFrag.setFilter(filterTypeJoin, filterTypeDistance, filterTypeDay, distanceDiff, favDayType, localDateTime);
+                            }else if(fragType == Status.FragType.JOINED){
+                                openMatchJoinedFrag.setFilter(filterTypeJoin, filterTypeDistance, filterTypeDay, distanceDiff, favDayType, localDateTime);
+                            }
+
                         }
                     });
 
@@ -156,18 +170,20 @@ public class OpenMatchActivity extends AppCompatActivity {
             fragmentTransaction = fragmentManager.beginTransaction();
             switch (item.getItemId()){
                 case R.id.open_match_list:{
-//                    OpenMatchListFrag openMatchListFrag = OpenMatchListFrag.newInstance(sportType);
                     fragmentTransaction.replace(R.id.host_fragment, openMatchListFrag)
                             .commit();
+                    fragType = Status.FragType.LIST;
                     return true;
                 }
                 case R.id.open_match_created:{
                     if(loginCheck()){
-                        fragmentTransaction.replace(R.id.host_fragment, new OpenMatchCreatedFrag())
+                        fragmentTransaction.replace(R.id.host_fragment, openMatchCreatedFrag)
                                 .commit();
+                        fragType = Status.FragType.OPENED;
                     }else{
                         fragmentTransaction.replace(R.id.host_fragment, new LoginNoticeFrag())
                                 .commit();
+                        fragType = Status.FragType.NOTICE;
                     }
 
 
@@ -175,11 +191,13 @@ public class OpenMatchActivity extends AppCompatActivity {
                 }
                 case R.id.open_match_joined:{
                     if(loginCheck()){
-                        fragmentTransaction.replace(R.id.host_fragment, new OpenMatchJoinedFrag())
+                        fragmentTransaction.replace(R.id.host_fragment, openMatchJoinedFrag)
                                 .commit();
+                        fragType = Status.FragType.JOINED;
                     }else{
                         fragmentTransaction.replace(R.id.host_fragment, new LoginNoticeFrag())
                                 .commit();
+                        fragType = Status.FragType.NOTICE;
                     }
 
                     return true;
@@ -192,6 +210,7 @@ public class OpenMatchActivity extends AppCompatActivity {
                     }else{
                         fragmentTransaction.replace(R.id.host_fragment, new LoginNoticeFrag())
                                 .commit();
+                        fragType = Status.FragType.NOTICE;
                     }
                     return true;
                 case R.id.chat_list:

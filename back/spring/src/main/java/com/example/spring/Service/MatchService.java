@@ -39,9 +39,9 @@ public class MatchService {
     }
 
     //유저가 참가중인 모든 오픈 매치를 가져와서 리턴
-    public List<OpenMatchDTO> findAllOpenMatchListByUserId(Long userId){
+    public List<OpenMatchDTO> findAllOpenMatchListByUserId(Long userIdx){
         List<OpenMatchDTO> result = new ArrayList<>();
-        List<MatchingDTO> tmp = matchRepository.findAllMatchingByUserId(userId);
+        List<MatchingDTO> tmp = matchRepository.findAllMatchingByUserIdx(userIdx);
         tmp.stream().forEach(matchingDTO -> {
             result.add(matchRepository.findById(matchingDTO.getOpenMatchId()).get());
         });
@@ -120,6 +120,11 @@ public class MatchService {
             return matchRepository.deleteMatching(leaveMatching);
         }
         return false;
+    }
+    //오픈매치 방장이 삭제할 경우, 참여했던 모든 인원이 오픈매치 떠나기 처리 되어야 함
+    public void leaveMatchAllUser(Long matchIdx){
+        //해당 매치 인덱스와 관련된 모든 매칭을 삭제처리함
+        matchRepository.deleteAllMatchingByMatchIdx(matchIdx);
     }
 
     //현재 매치에 참여중인 유저 프로필들 모두 가져오기

@@ -63,7 +63,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
         this.rootViewListener = rootViewListener;
     }
     public interface RootViewListener{
-        void rootViewNotify();
+        void rootViewDelNotify(OpenMatchDTO openMatchDTO);
     }
 
     @Override
@@ -235,6 +235,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
                                                                                                 Toast.makeText(mContext, "이미 참여한 오픈매치", Toast.LENGTH_SHORT).show();
                                                                                             }else {
                                                                                                 Toast.makeText(mContext, "참여 완료", Toast.LENGTH_SHORT).show();
+                                                                                                // 달력에 추가
                                                                                             }
                                                                                             notifyDataSetChanged();
 
@@ -303,6 +304,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
                                                                             Toast.makeText(mContext, "이미 참여한 오픈매치", Toast.LENGTH_SHORT).show();
                                                                         }else {
                                                                             Toast.makeText(mContext, "참여 완료", Toast.LENGTH_SHORT).show();
+                                                                            // 달력에 추가
                                                                         }
                                                                         notifyDataSetChanged();
 
@@ -420,9 +422,26 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
                                                                 if(response.isSuccessful()){
                                                                     if(response.body()){
                                                                         Toast.makeText(mContext, "삭제완료", Toast.LENGTH_SHORT).show();
-
+                                                                        //매칭 내용도 삭제
+                                                                        leaveMatching(openMatchDTO.getId(), Long.valueOf(preferenceUtil.getString("userIdx")));
                                                                         //현재 디테일을 포함하고 있는 리스트뷰에 알려줘야함
-                                                                        rootViewListener.rootViewNotify();
+                                                                        rootViewListener.rootViewDelNotify(openMatchDTO);
+
+                                                                        retrofitUtil.getRetrofitAPI().leaveAllMatchUser(openMatchDTO.getId()).enqueue(new Callback<Boolean>() {
+                                                                            @Override
+                                                                            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                                                                                if(response.isSuccessful()){
+                                                                                    Log.d("매치삭제", "다른 유저들 매칭도 삭제처리 완료");
+                                                                                }
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onFailure(Call<Boolean> call, Throwable t) {
+
+                                                                            }
+                                                                        });
+
+
                                                                     }else {
                                                                         Toast.makeText(mContext, "오류로 삭제 실패", Toast.LENGTH_SHORT).show();
                                                                     }

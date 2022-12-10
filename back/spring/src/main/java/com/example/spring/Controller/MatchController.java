@@ -64,6 +64,11 @@ public class MatchController {
 
         return matchService.leaveMatch(matchingDTO);
     }
+    @DeleteMapping("/leaveAllMatchUser/{openMatchIdx}")
+    public boolean leaveMatchAllUser(@PathVariable Long openMatchIdx){
+        matchService.leaveMatchAllUser(openMatchIdx);
+        return true;
+    }
 
 
     //오픈 매치 리스트

@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,9 @@ import com.mju.exercise.Domain.OpenMatchDTO;
 import com.mju.exercise.HttpRequest.RetrofitUtil;
 import com.mju.exercise.Preference.PreferenceUtil;
 import com.mju.exercise.R;
+import com.mju.exercise.StatusEnum.Status;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +29,7 @@ import retrofit2.Response;
  * Use the {@link OpenMatchCreatedFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OpenMatchCreatedFrag extends Fragment {
+public class OpenMatchCreatedFrag extends Fragment implements OpenMatchFilter{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -43,25 +46,14 @@ public class OpenMatchCreatedFrag extends Fragment {
     OpenMatchAdapter openMatchAdapter;
     PreferenceUtil preferenceUtil;
 
+    ArrayList<OpenMatchDTO> tmpList = new ArrayList<>();
+
     public OpenMatchCreatedFrag() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment OpenMatchCreatedFrag.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static OpenMatchCreatedFrag newInstance(String param1, String param2) {
+    public static OpenMatchCreatedFrag newInstance() {
         OpenMatchCreatedFrag fragment = new OpenMatchCreatedFrag();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -71,6 +63,14 @@ public class OpenMatchCreatedFrag extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(openMatchAdapter != null){
+            openMatchAdapter.notifyDataSetChanged();
         }
     }
 
@@ -96,9 +96,19 @@ public class OpenMatchCreatedFrag extends Fragment {
         retrofitUtil.getRetrofitAPI().loadOpenMatchesCreatedByMe(userIdx).enqueue(new Callback<List<OpenMatchDTO>>() {
             @Override
             public void onResponse(Call<List<OpenMatchDTO>> call, Response<List<OpenMatchDTO>> response) {
+
+                Log.d("데이터로드", String.valueOf(response.code()));
                 if(response.isSuccessful()){
+                    Log.d("데이터로드", "생성한 테스트");
                     openMatches = (ArrayList<OpenMatchDTO>) response.body();
                     openMatchAdapter = new OpenMatchAdapter(getContext(), openMatches);
+                    openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
+                        @Override
+                        public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                            openMatches.remove(openMatchDTO);
+                            openMatchAdapter.notifyDataSetChanged();
+                        }
+                    });
                     customListView.setAdapter(openMatchAdapter);
                 }
             }
@@ -109,5 +119,192 @@ public class OpenMatchCreatedFrag extends Fragment {
             }
         });
 
+    }
+
+    @Override
+    public void setFilter(Status.FilterTypeJoin filterTypeJoin, Status.FilterTypeDistance filterTypeDistance, Status.FilterTypeDay filterTypeDay, Status.DistanceDiff distanceDiff, Status.FavDayType favDayType, LocalDateTime localDateTime) {
+
+        //필터링할 오픈매치 없으면 그냥 리턴
+        if(openMatches == null){
+            return;
+        }
+
+        if(filterTypeJoin == Status.FilterTypeJoin.JOIN_DEFAULT && filterTypeDay == Status.FilterTypeDay.DAY_DEFAULT && filterTypeDistance == Status.FilterTypeDistance.DISTANCE_DEFAULT){
+            //모두 디폴트면 기존 리스트 그대로 보여줌
+            openMatchAdapter = new OpenMatchAdapter(getContext(), openMatches);
+            openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
+                @Override
+                public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                    openMatches.remove(openMatchDTO);
+                    openMatchAdapter.notifyDataSetChanged();
+                }
+            });
+            customListView.setAdapter(openMatchAdapter);
+        }else {
+            ArrayList<OpenMatchDTO> newOpenMatches = (ArrayList<OpenMatchDTO>) openMatches.clone();
+            if(filterTypeDistance != Status.FilterTypeDistance.DISTANCE_DEFAULT){
+
+                //거리로 필터링
+                if(filterTypeDistance == Status.FilterTypeDistance.DISTANCE_DIFFERENCE){
+                    distanceInner(newOpenMatches, distanceDiff);
+                }else if(filterTypeDistance == Status.FilterTypeDistance.DISTANCE_NEAR){
+                    distanceSort(newOpenMatches);
+                }
+
+                //무언가 처리하면 임시값을 tmpList에 담아뒀다가 반영함
+                newOpenMatches = (ArrayList<OpenMatchDTO>) tmpList.clone();
+                tmpList.clear();
+            }
+            //거리 관련 필터링 한 거 없으면 기존 데이터 그대로 이용함
+            if(filterTypeDay != Status.FilterTypeDay.DAY_DEFAULT){
+                //날짜로 필터링
+                if(filterTypeDay == Status.FilterTypeDay.DAY_FAVDAY){
+                    dayFav(newOpenMatches, favDayType);
+                }else if(filterTypeDay == Status.FilterTypeDay.DAY_NEAR){
+                    daySort(newOpenMatches);
+                }else if(filterTypeDay == Status.FilterTypeDay.DAY_PICK){
+                    Log.d("필터특정날짜", "특정날짜 고름");
+                    dayPick(newOpenMatches, localDateTime);
+                }
+
+                //무언가 처리하면 임시값을 tmpList에 담아뒀다가 반영함
+                newOpenMatches = (ArrayList<OpenMatchDTO>) tmpList.clone();
+                tmpList.clear();
+            }
+
+            //비동기로 처리되는 애임
+            //참가 가능 여부로 필터링
+            if(filterTypeJoin == Status.FilterTypeJoin.JOIN_CAN){
+                canJoin(newOpenMatches);
+                newOpenMatches = (ArrayList<OpenMatchDTO>) tmpList.clone();
+                tmpList.clear();
+            }
+        }
+    }
+
+    public void dayFav(ArrayList<OpenMatchDTO> pastList, Status.FavDayType favDayType){
+        FilterDataLoader filterDataLoader = new FilterDataLoader(getContext());
+        filterDataLoader.setDataListener(new FilterDataLoader.DataLoadedListener() {
+            @Override
+            public void dataLoadComplete(ArrayList<OpenMatchDTO> list) {
+                tmpList = (ArrayList<OpenMatchDTO>) list.clone();
+                openMatchAdapter = new OpenMatchAdapter(getContext(), list);
+                openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
+                    @Override
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                        list.remove(openMatchDTO);
+                        openMatchAdapter.notifyDataSetChanged();
+                    }
+                });
+                customListView.setAdapter(openMatchAdapter);
+                openMatchAdapter.notifyDataSetChanged();
+            }
+        });
+        filterDataLoader.getDataFavDay(pastList, favDayType);
+    }
+    public void dayPick(ArrayList<OpenMatchDTO> pastList, LocalDateTime localDateTime){
+        FilterDataLoader filterDataLoader = new FilterDataLoader(getContext());
+        filterDataLoader.setDataListener(new FilterDataLoader.DataLoadedListener() {
+            @Override
+            public void dataLoadComplete(ArrayList<OpenMatchDTO> list) {
+                tmpList = (ArrayList<OpenMatchDTO>) list.clone();
+                openMatchAdapter = new OpenMatchAdapter(getContext(), list);
+                openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
+                    @Override
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                        list.remove(openMatchDTO);
+                        openMatchAdapter.notifyDataSetChanged();
+                    }
+
+                });
+                customListView.setAdapter(openMatchAdapter);
+                openMatchAdapter.notifyDataSetChanged();
+            }
+        });
+        filterDataLoader.getDataPickDay(pastList, localDateTime);
+    }
+    public void daySort(ArrayList<OpenMatchDTO> pastList){
+        FilterDataLoader filterDataLoader = new FilterDataLoader(getContext());
+        filterDataLoader.setDataListener(new FilterDataLoader.DataLoadedListener() {
+            @Override
+            public void dataLoadComplete(ArrayList<OpenMatchDTO> list) {
+                tmpList = (ArrayList<OpenMatchDTO>) list.clone();
+                openMatchAdapter = new OpenMatchAdapter(getContext(), list);
+                openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
+                    @Override
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                        list.remove(openMatchDTO);
+                        openMatchAdapter.notifyDataSetChanged();
+                    }
+                });
+                customListView.setAdapter(openMatchAdapter);
+                openMatchAdapter.notifyDataSetChanged();
+            }
+        });
+        filterDataLoader.getDataDaySort(pastList);
+    }
+
+
+    public void distanceInner(ArrayList<OpenMatchDTO> pastList, Status.DistanceDiff diff){
+        FilterDataLoader filterDataLoader = new FilterDataLoader(getContext());
+        filterDataLoader.setDataListener(new FilterDataLoader.DataLoadedListener() {
+            @Override
+            public void dataLoadComplete(ArrayList<OpenMatchDTO> list) {
+                tmpList = (ArrayList<OpenMatchDTO>) list.clone();
+                openMatchAdapter = new OpenMatchAdapter(getContext(), list);
+                openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
+                    @Override
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                        list.remove(openMatchDTO);
+                        openMatchAdapter.notifyDataSetChanged();
+                    }
+                });
+                customListView.setAdapter(openMatchAdapter);
+                openMatchAdapter.notifyDataSetChanged();
+            }
+        });
+        filterDataLoader.getDataDisDiff(pastList, diff);
+    }
+
+    public void distanceSort(ArrayList<OpenMatchDTO> pastList){
+        FilterDataLoader filterDataLoader = new FilterDataLoader(getContext());
+        filterDataLoader.setDataListener(new FilterDataLoader.DataLoadedListener() {
+            @Override
+            public void dataLoadComplete(ArrayList<OpenMatchDTO> list) {
+                tmpList = (ArrayList<OpenMatchDTO>) list.clone();
+                openMatchAdapter = new OpenMatchAdapter(getContext(), list);
+                openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
+                    @Override
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                        list.remove(openMatchDTO);
+                        openMatchAdapter.notifyDataSetChanged();
+                    }
+                });
+                customListView.setAdapter(openMatchAdapter);
+                openMatchAdapter.notifyDataSetChanged();
+            }
+        });
+        filterDataLoader.getDataDistanceSort(pastList);
+    }
+
+    public void canJoin(ArrayList<OpenMatchDTO> pastList){
+        FilterDataLoader filterDataLoader = new FilterDataLoader(getContext());
+        filterDataLoader.setDataListener(new FilterDataLoader.DataLoadedListener() {
+            @Override
+            public void dataLoadComplete(ArrayList<OpenMatchDTO> list) {
+                tmpList = (ArrayList<OpenMatchDTO>) list.clone();
+                openMatchAdapter = new OpenMatchAdapter(getContext(), list);
+                openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
+                    @Override
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
+                        list.remove(openMatchDTO);
+                        openMatchAdapter.notifyDataSetChanged();
+                    }
+                });
+                customListView.setAdapter(openMatchAdapter);
+                openMatchAdapter.notifyDataSetChanged();
+            }
+        });
+        filterDataLoader.getDataCanJoin(pastList);
     }
 }
