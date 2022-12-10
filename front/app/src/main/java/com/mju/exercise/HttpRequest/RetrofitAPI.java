@@ -97,6 +97,11 @@ public interface RetrofitAPI {
     @Headers("Content-Type: application/json")
     @POST("/api/match/leaveMatch")
     Call<Boolean> leaveMatch(@Body MatchingDTO matchingDTO);
+    //오픈매치 삭제시 참가중이던 유저들도 모두 떠나기 처리
+    @Headers("Content-Type: application/json")
+    @DELETE("/api/match/leaveAllMatchUser/{openMatchIdx}")
+    Call<Boolean> leaveAllMatchUser(@Path(value = "openMatchIdx", encoded = true) Long openMatchIdx);
+
 
 
 

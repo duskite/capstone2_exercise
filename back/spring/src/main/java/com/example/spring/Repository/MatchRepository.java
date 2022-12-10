@@ -17,12 +17,13 @@ public interface MatchRepository {
     Optional<OpenMatchDTO> findById(Long matchId);
 
     Optional<MatchingDTO> findMatchingById(Long matchingId);
-    List<MatchingDTO> findAllMatchingByUserId(Long userId);
+    List<MatchingDTO> findAllMatchingByUserIdx(Long userId);
     List<MatchingDTO> findAllMatchingByOpenMatchId(Long openMatchId);
 
 
     boolean delete(OpenMatchDTO openMatchDTO);
     boolean deleteMatching(MatchingDTO matchingDTO);
+    void deleteAllMatchingByMatchIdx(Long matchIdx);
     List<MatchingDTO> isExistMatching(MatchingDTO matchingDTO);
 
 }

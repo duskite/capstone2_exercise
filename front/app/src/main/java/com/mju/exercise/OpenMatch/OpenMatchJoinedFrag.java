@@ -96,7 +96,12 @@ public class OpenMatchJoinedFrag extends Fragment implements OpenMatchFilter {
         retrofitUtil.getRetrofitAPI().loadOpenMatchesJoined(userIdx).enqueue(new Callback<List<OpenMatchDTO>>() {
             @Override
             public void onResponse(Call<List<OpenMatchDTO>> call, Response<List<OpenMatchDTO>> response) {
+
+                Log.d("데이터로드", String.valueOf(response.code()));
+                Log.d("데이터로드", String.valueOf(response.message()));
+
                 if(response.isSuccessful()){
+                    Log.d("데이터로드", "참가중인 테스트");
                     openMatches = (ArrayList<OpenMatchDTO>) response.body();
                     openMatchAdapter = new OpenMatchAdapter(getContext(), openMatches);
                     openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {

@@ -96,7 +96,10 @@ public class OpenMatchCreatedFrag extends Fragment implements OpenMatchFilter{
         retrofitUtil.getRetrofitAPI().loadOpenMatchesCreatedByMe(userIdx).enqueue(new Callback<List<OpenMatchDTO>>() {
             @Override
             public void onResponse(Call<List<OpenMatchDTO>> call, Response<List<OpenMatchDTO>> response) {
+
+                Log.d("데이터로드", String.valueOf(response.code()));
                 if(response.isSuccessful()){
+                    Log.d("데이터로드", "생성한 테스트");
                     openMatches = (ArrayList<OpenMatchDTO>) response.body();
                     openMatchAdapter = new OpenMatchAdapter(getContext(), openMatches);
                     openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
