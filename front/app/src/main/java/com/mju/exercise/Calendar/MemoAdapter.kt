@@ -34,8 +34,14 @@ class MemoAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.ViewHold
         view.text_memo.setText(item.memo)
         view.text_title.setText(item.title)
         val date = Date()
-        date.time = item.datetime.toLong()
-        view.text_datetime.setText(SimpleDateFormat("yyyy/MM/dd hh:MM:ss").format(date))
+
+        //오픈매치 참가로 생성된 달력메모 중 날짜 미정인거는 미정 표시
+        if(item.datetime.toLong() == 1L){
+            view.text_datetime.setText("미정")
+        }else{
+            date.time = item.datetime.toLong()
+            view.text_datetime.setText(SimpleDateFormat("yyyy/MM/dd hh:MM:ss").format(date))
+        }
 
         view.itemView.setOnClickListener {
 

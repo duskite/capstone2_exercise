@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.mju.exercise.Calendar.DBLoader;
 import com.mju.exercise.ChatActivity;
 import com.mju.exercise.Domain.MatchingDTO;
 import com.mju.exercise.Domain.OpenMatchDTO;
@@ -33,7 +34,10 @@ import com.mju.exercise.Profile.SmallProfileAdapter;
 import com.mju.exercise.R;
 import com.skydoves.expandablelayout.ExpandableLayout;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -47,6 +51,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
     RetrofitUtil retrofitUtil;
     PreferenceUtil preferenceUtil;
     private RootViewListener rootViewListener;
+    private DBLoader memoDB;
 
 
     public OpenMatchAdapter(@NonNull Context context, @NonNull ArrayList list) {
@@ -56,6 +61,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
 
         retrofitUtil = RetrofitUtil.getInstance();
         preferenceUtil = PreferenceUtil.getInstance(context);
+        memoDB = new DBLoader(context);
     }
 
     //루트 리스트뷰 데이터 변경되면 반영하기 위해
@@ -236,6 +242,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
                                                                                             }else {
                                                                                                 Toast.makeText(mContext, "참여 완료", Toast.LENGTH_SHORT).show();
                                                                                                 // 달력에 추가
+                                                                                                createMemo(openMatchDTO.getSubject(), openMatchDTO.getArticle(), openMatchDTO.getPlayDateTime());
                                                                                             }
                                                                                             notifyDataSetChanged();
 
@@ -305,6 +312,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
                                                                         }else {
                                                                             Toast.makeText(mContext, "참여 완료", Toast.LENGTH_SHORT).show();
                                                                             // 달력에 추가
+                                                                            createMemo(openMatchDTO.getSubject(), openMatchDTO.getArticle(), openMatchDTO.getPlayDateTime());
                                                                         }
                                                                         notifyDataSetChanged();
 
@@ -587,6 +595,29 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
         result = distance / 1000;
 
         return result;
+    }
+
+    //오픈매치 참가시 달력 메모 생성
+    private void createMemo(String subject, String article, String openMatchDate){
+
+        LocalDateTime localDateTime = null;
+        LocalDate localDate = null;
+        Date date = null;
+        Long l = null;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            if(openMatchDate != null){
+                localDateTime = LocalDateTime.parse(openMatchDate);
+                localDate = localDateTime.toLocalDate();
+                date = java.sql.Date.valueOf(String.valueOf(localDate));
+                l = date.getTime();
+            }else {
+                //날짜 없으면 우선 1넘겨서 처리
+                l = 1l;
+            }
+
+            memoDB.save("[참여중]" + subject, "오픈매치 참여로 자동 생성된 메모입니다. \n\n내용: " + article, l);
+        }
     }
 
 }
