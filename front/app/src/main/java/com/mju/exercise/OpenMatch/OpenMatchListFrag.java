@@ -77,7 +77,6 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
         if(openMatchAdapter != null){
             openMatchAdapter.notifyDataSetChanged();
         }
-
     }
 
     @Override
@@ -146,6 +145,11 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                           Status.FilterTypeDay filterTypeDay, Status.DistanceDiff distanceDiff,
                           Status.FavDayType favDayType,
                           LocalDateTime localDateTime) {
+
+        //필터링할 오픈매치 없으면 그냥 리턴
+        if(openMatches == null){
+            return;
+        }
 
         if(filterTypeJoin == Status.FilterTypeJoin.JOIN_DEFAULT && filterTypeDay == Status.FilterTypeDay.DAY_DEFAULT && filterTypeDistance == Status.FilterTypeDistance.DISTANCE_DEFAULT){
             //모두 디폴트면 기존 리스트 그대로 보여줌

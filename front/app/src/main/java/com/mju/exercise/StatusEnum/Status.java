@@ -42,4 +42,11 @@ public class Status {
         SAT,
         SUN
     }
+
+    public static enum FragType{
+        LIST,
+        JOINED,
+        OPENED,
+        NOTICE
+    }
 }
