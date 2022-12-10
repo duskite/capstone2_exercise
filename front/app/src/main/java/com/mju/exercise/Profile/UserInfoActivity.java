@@ -144,12 +144,12 @@ public class UserInfoActivity extends AppCompatActivity {
         Log.d("이미지로드", url);
         if(path != null && !path.equals("")){
             Glide.with(mContext).load(url).circleCrop().into(mImgProfile);
-            mImgProfile.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    bigProfileImage(url);
-                }
-            });
+//            mImgProfile.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    bigProfileImage(url);
+//                }
+//            });
         }
     }
 

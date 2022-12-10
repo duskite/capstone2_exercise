@@ -105,7 +105,7 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                     openMatchAdapter = new OpenMatchAdapter(getContext(), openMatches);
                     openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                         @Override
-                        public void rootViewNotify() {
+                        public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
                             openMatchAdapter.notifyDataSetChanged();
                         }
                     });
@@ -156,7 +156,7 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
             openMatchAdapter = new OpenMatchAdapter(getContext(), openMatches);
             openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                 @Override
-                public void rootViewNotify() {
+                public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
                     openMatchAdapter.notifyDataSetChanged();
                 }
             });
@@ -215,7 +215,7 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                 openMatchAdapter = new OpenMatchAdapter(getContext(), list);
                 openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                     @Override
-                    public void rootViewNotify() {
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
                         openMatchAdapter.notifyDataSetChanged();
                     }
                 });
@@ -234,7 +234,7 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                 openMatchAdapter = new OpenMatchAdapter(getContext(), list);
                 openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                     @Override
-                    public void rootViewNotify() {
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
                         openMatchAdapter.notifyDataSetChanged();
                     }
                 });
@@ -253,7 +253,7 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                 openMatchAdapter = new OpenMatchAdapter(getContext(), list);
                 openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                     @Override
-                    public void rootViewNotify() {
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
                         openMatchAdapter.notifyDataSetChanged();
                     }
                 });
@@ -274,7 +274,7 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                 openMatchAdapter = new OpenMatchAdapter(getContext(), list);
                 openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                     @Override
-                    public void rootViewNotify() {
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
                         openMatchAdapter.notifyDataSetChanged();
                     }
                 });
@@ -294,7 +294,7 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                 openMatchAdapter = new OpenMatchAdapter(getContext(), list);
                 openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                     @Override
-                    public void rootViewNotify() {
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
                         openMatchAdapter.notifyDataSetChanged();
                     }
                 });
@@ -314,7 +314,7 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
                 openMatchAdapter = new OpenMatchAdapter(getContext(), list);
                 openMatchAdapter.setRootViewListener(new OpenMatchAdapter.RootViewListener() {
                     @Override
-                    public void rootViewNotify() {
+                    public void rootViewDelNotify(OpenMatchDTO openMatchDTO) {
                         openMatchAdapter.notifyDataSetChanged();
                     }
                 });
