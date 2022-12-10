@@ -75,8 +75,6 @@ public class OpenMatchActivity extends AppCompatActivity {
         init();
         checkGPS();
         bottomNavigationView.setSelectedItemId(R.id.open_match_list);
-
-
     }
 
 

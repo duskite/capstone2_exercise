@@ -72,6 +72,15 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if(openMatchAdapter != null){
+            openMatchAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         retrofitUtil = RetrofitUtil.getInstance();
