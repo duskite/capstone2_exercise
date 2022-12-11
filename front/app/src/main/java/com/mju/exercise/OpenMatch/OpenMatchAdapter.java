@@ -675,7 +675,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
     }
     //해당 오픈매치에 포함되어 있는 유저들에게 알림 발송
     private void sendNoti(String openMatchName, String userId, String userNotiToken) throws JSONException {
-        
+
         HashMap<String, String> innerJsonObject = new HashMap<>();
         innerJsonObject.put("title", "오픈매치 알림");
         innerJsonObject.put("body", openMatchName + "에 새로운 유저가 참가 했습니다.");
