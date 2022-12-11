@@ -14,6 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 import com.mju.exercise.Calendar.CalendarActivity;
 import com.mju.exercise.HttpRequest.RetrofitUtil;
 import com.mju.exercise.OpenMatch.OpenMatchActivity;
@@ -65,6 +68,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        notiTest();
+
+    }
+
+    private void notiTest(){
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                Log.d("알림", s);
+            }
+        });
     }
 
     @Override

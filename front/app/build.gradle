@@ -60,6 +60,9 @@ dependencies {
     //expendable layout
     implementation "com.github.skydoves:expandablelayout:1.0.7"
 
+    //firebase messaging
+    implementation 'com.google.firebase:firebase-messaging:21.1.0'
+
 
 
 }
