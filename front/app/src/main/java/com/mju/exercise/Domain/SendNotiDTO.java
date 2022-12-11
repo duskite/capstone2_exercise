@@ -1,9 +1,14 @@
 package com.mju.exercise.Domain;
 
+import com.google.gson.annotations.SerializedName;
+
 public class SendNotiDTO {
 
+    @SerializedName("to")
     String to;
+    @SerializedName("priority")
     String priority;
+    @SerializedName("notification")
     Object notification;
 
     public String getTo() {

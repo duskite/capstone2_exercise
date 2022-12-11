@@ -651,6 +651,11 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
         innerJsonObject.put("title", "앱텟");
         innerJsonObject.put("body", "aa");
 
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("to", "dNgDuaaXQlC_fLyOv58RGC:APA91bGz1Vrkh73cMB51UDdy_2r_kQQ_IEExB062Su_atSQ4S9JA-lZ9dnT4nnkCV1Zp1nidfLqRDJRuIpGN47yhN4y_MHBnEN2KeOHsQ24v5dhkSF3X-jJu9KvW72d44duPIEEV6REV");
+//        jsonObject.put("priority", "high");
+//        jsonObject.put("notification", innerJsonObject);
+
         SendNotiDTO sendNotiDTO = new SendNotiDTO();
         sendNotiDTO.setTo("dNgDuaaXQlC_fLyOv58RGC:APA91bGz1Vrkh73cMB51UDdy_2r_kQQ_IEExB062Su_atSQ4S9JA-lZ9dnT4nnkCV1Zp1nidfLqRDJRuIpGN47yhN4y_MHBnEN2KeOHsQ24v5dhkSF3X-jJu9KvW72d44duPIEEV6REV");
         sendNotiDTO.setPriority("high");
