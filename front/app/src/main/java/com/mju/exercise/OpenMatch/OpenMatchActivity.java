@@ -213,15 +213,6 @@ public class OpenMatchActivity extends AppCompatActivity {
                         fragType = Status.FragType.NOTICE;
                     }
                     return true;
-                case R.id.chat_list:
-                    if(loginCheck()){
-                        Intent intent = new Intent(OpenMatchActivity.this, ChatActivity.class);
-                        startActivity(intent);
-                    }else{
-                        fragmentTransaction.replace(R.id.host_fragment, new LoginNoticeFrag())
-                                .commit();
-                    }
-                    return true;
 
             }
 
