@@ -1,12 +1,14 @@
 package com.mju.exercise.HttpRequest;
 
 import com.mju.exercise.Domain.ApiResponseDTO;
-import com.mju.exercise.Domain.JwtDTO;
 import com.mju.exercise.Domain.MatchingDTO;
 import com.mju.exercise.Domain.OpenMatchDTO;
 import com.mju.exercise.Domain.ProfileDTO;
+import com.mju.exercise.Domain.SendNotiDTO;
 import com.mju.exercise.Domain.SignInDTO;
 import com.mju.exercise.Domain.SignUpDTO;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -14,8 +16,6 @@ import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
@@ -103,11 +103,18 @@ public interface RetrofitAPI {
     Call<Boolean> leaveAllMatchUser(@Path(value = "openMatchIdx", encoded = true) Long openMatchIdx);
 
 
-
-
     //현재 오픈매치에 참여중인 모든 유저 프로필 정보 가져오기
     @Headers("Content-Type: application/json")
     @GET("/api/match/joinedUserProfiles/{openMatchIdx}")
     Call<List<ProfileDTO>> getJoinedUserProfiles(@Path(value = "openMatchIdx", encoded = true) Long openMatchIdx);
+
+
+    //알림 발송 API
+    @Headers({
+            "Content-Type: application/json",
+            "Authorization: key=AAAAiy71WHw:APA91bFQ4vN6FiUowug0bHUOAU4olEfSaBV93j8JlU5p-gShVNC4oAAecNRx7Oclw456sqWnoz4mRLIMCtEjIJ5gdMh3wdHgMxA8oSFKJH5HB5_OF34myeNtY-zIFNLJ4ke590AUyO7K"
+    })
+    @POST("https://fcm.googleapis.com/fcm/send")
+    Call<Void> sendNoti(@Body SendNotiDTO sendNotiDTO);
 
 }

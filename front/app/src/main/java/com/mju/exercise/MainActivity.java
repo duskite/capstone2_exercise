@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.mju.exercise.Calendar.CalendarActivity;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private PreferenceUtil preferenceUtil;
     private RetrofitUtil retrofitUtil;
+    private FirebaseDatabase firebaseDatabase;
 
     private static boolean isLogined = false;
 
@@ -67,16 +69,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        notiTest();
-
     }
 
-    private void notiTest(){
+    private void updateNotiToken(){
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
             @Override
             public void onSuccess(String s) {
                 Log.d("알림", s);
+
+                firebaseDatabase = FirebaseDatabase.getInstance();
+                firebaseDatabase.getReference().child("Notification").child("ALL_USERS").child(preferenceUtil.getString("userId")).setValue(s);
             }
         });
     }
@@ -100,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d("로그인", "엑세스 토큰이 들었음");
         btnLoginOrUserInfo.setText("프로필");
         isLogined = true;
+        //로그인 되어있을때만 알림 토큰 업데이트
+        updateNotiToken();
         return;
     }
 

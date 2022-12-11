@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -12,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.mju.exercise.Preference.PreferenceUtil;
 import com.mju.exercise.R;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -19,14 +21,29 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String CHANNEL_ID = "exercise";
     private static final CharSequence CHANNEL_NAME = "noti";
     private FirebaseDatabase firebaseDatabase;
+    private PreferenceUtil preferenceUtil;
 
     //토큰이 생성 또는 변경 될 경우 호출 됨
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-//        firebaseDatabase.getReference("Notification").child("")
+        //로그인한 유저만 따로 토큰 관리
+        if(loginCheck()){
+            //토큰 생성 또는 변경시 db에 반영
+            firebaseDatabase = FirebaseDatabase.getInstance();
+            firebaseDatabase.getReference().child("Notification").child("ALL_USERS").child(preferenceUtil.getString("userId")).setValue(s);
+        }
+    }
+
+    //로그인된 유저인지 체크
+    private boolean loginCheck(){
+        preferenceUtil = PreferenceUtil.getInstance(getApplicationContext());
+        String tmp = preferenceUtil.getString("userId");
+        if(tmp == null || tmp.equals("")){
+            return false;
+        }
+        return true;
     }
 
     //토큰을 이용해 서버에서 push 받았을때 실행됨

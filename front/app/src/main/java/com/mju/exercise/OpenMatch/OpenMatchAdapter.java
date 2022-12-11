@@ -17,22 +17,26 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mju.exercise.Calendar.DBLoader;
 import com.mju.exercise.ChatActivity;
 import com.mju.exercise.Domain.MatchingDTO;
 import com.mju.exercise.Domain.OpenMatchDTO;
 import com.mju.exercise.Domain.ProfileDTO;
+import com.mju.exercise.Domain.SendNotiDTO;
 import com.mju.exercise.HttpRequest.RetrofitUtil;
 import com.mju.exercise.PopupMapActivity;
 import com.mju.exercise.Preference.PreferenceUtil;
 import com.mju.exercise.Profile.SmallProfileAdapter;
 import com.mju.exercise.R;
 import com.skydoves.expandablelayout.ExpandableLayout;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -50,6 +54,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
     private ArrayList<OpenMatchDTO> list;
     RetrofitUtil retrofitUtil;
     PreferenceUtil preferenceUtil;
+    private FirebaseDatabase firebaseDatabase;
     private RootViewListener rootViewListener;
     private DBLoader memoDB;
 
@@ -243,6 +248,8 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
                                                                                                 Toast.makeText(mContext, "참여 완료", Toast.LENGTH_SHORT).show();
                                                                                                 // 달력에 추가
                                                                                                 createMemo(openMatchDTO.getSubject(), openMatchDTO.getArticle(), openMatchDTO.getPlayDateTime());
+                                                                                                // 알림 db에 추가
+                                                                                                updateInNotiDB(openMatchDTO.getId());
                                                                                             }
                                                                                             notifyDataSetChanged();
 
@@ -313,6 +320,8 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
                                                                             Toast.makeText(mContext, "참여 완료", Toast.LENGTH_SHORT).show();
                                                                             // 달력에 추가
                                                                             createMemo(openMatchDTO.getSubject(), openMatchDTO.getArticle(), openMatchDTO.getPlayDateTime());
+                                                                            // 알림 DB에 추가
+                                                                            updateInNotiDB(openMatchDTO.getId());
                                                                         }
                                                                         notifyDataSetChanged();
 
@@ -394,6 +403,8 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
                                                             leaveMatching(openMatchDTO.getId(), Long.valueOf(preferenceUtil.getString("userIdx")));
                                                             viewHolder.btnDetailClick.setText("참여하기");
                                                             notifyDataSetChanged();
+                                                            // 알림DB에서 삭제
+                                                            deleteInNotiDB(openMatchDTO.getId());
 
                                                         }
                                                     }).show();
@@ -618,6 +629,55 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
 
             memoDB.save("[참여중]" + subject, "오픈매치 참여로 자동 생성된 메모입니다. \n\n내용: " + article, l);
         }
+    }
+
+    // 오픈매치 참여시 알림DB에 추가
+    private void updateInNotiDB(Long openMatchIdx){
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.getReference().child("Notification").child("OpenMatches").child(openMatchIdx.toString())
+                .child(preferenceUtil.getString("userId")).setValue("true");
+
+        // 알림 발송
+        try {
+            sendNoti(openMatchIdx);
+        }catch (JSONException e){
+
+        }
+    }
+    //해당 오픈매치에 포함되어 있는 유저들에게 알림 발송
+    private void sendNoti(Long openMatchIdx) throws JSONException {
+
+        JSONObject innerJsonObject = new JSONObject();
+        innerJsonObject.put("title", "앱텟");
+        innerJsonObject.put("body", "aa");
+
+        SendNotiDTO sendNotiDTO = new SendNotiDTO();
+        sendNotiDTO.setTo("dNgDuaaXQlC_fLyOv58RGC:APA91bGz1Vrkh73cMB51UDdy_2r_kQQ_IEExB062Su_atSQ4S9JA-lZ9dnT4nnkCV1Zp1nidfLqRDJRuIpGN47yhN4y_MHBnEN2KeOHsQ24v5dhkSF3X-jJu9KvW72d44duPIEEV6REV");
+        sendNotiDTO.setPriority("high");
+        sendNotiDTO.setNotification(innerJsonObject);
+
+        retrofitUtil.getRetrofitAPI().sendNoti(sendNotiDTO).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Log.d("알림", "응답코드: " + response.code());
+                if(response.isSuccessful()){
+                    Log.d("알림", "발송 처리됨");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    // 오픈매치 나가기시 알림DB에서 삭제
+    private void deleteInNotiDB(Long openMatchIdx){
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.getReference().child("Notification").child("OpenMatches").child(openMatchIdx.toString())
+                .child(preferenceUtil.getString("userId")).setValue(null);
     }
 
 }
