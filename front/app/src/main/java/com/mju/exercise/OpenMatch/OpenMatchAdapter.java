@@ -20,7 +20,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mju.exercise.Calendar.DBLoader;
 import com.mju.exercise.ChatActivity;
@@ -42,6 +46,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -249,7 +254,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
                                                                                                 // 달력에 추가
                                                                                                 createMemo(openMatchDTO.getSubject(), openMatchDTO.getArticle(), openMatchDTO.getPlayDateTime());
                                                                                                 // 알림 db에 추가
-                                                                                                updateInNotiDB(openMatchDTO.getId());
+                                                                                                updateInNotiDB(openMatchDTO);
                                                                                             }
                                                                                             notifyDataSetChanged();
 
@@ -321,7 +326,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
                                                                             // 달력에 추가
                                                                             createMemo(openMatchDTO.getSubject(), openMatchDTO.getArticle(), openMatchDTO.getPlayDateTime());
                                                                             // 알림 DB에 추가
-                                                                            updateInNotiDB(openMatchDTO.getId());
+                                                                            updateInNotiDB(openMatchDTO);
                                                                         }
                                                                         notifyDataSetChanged();
 
@@ -632,32 +637,51 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
     }
 
     // 오픈매치 참여시 알림DB에 추가
-    private void updateInNotiDB(Long openMatchIdx){
+    private void updateInNotiDB(OpenMatchDTO openMatchDTO){
         firebaseDatabase = FirebaseDatabase.getInstance();
-        firebaseDatabase.getReference().child("Notification").child("OpenMatches").child(openMatchIdx.toString())
+        firebaseDatabase.getReference().child("Notification").child("OpenMatches").child(openMatchDTO.getId().toString())
                 .child(preferenceUtil.getString("userId")).setValue("true");
 
         // 알림 발송
-        try {
-            sendNoti(openMatchIdx);
-        }catch (JSONException e){
+        firebaseDatabase.getReference().child("Notification").child("OpenMatches").child(openMatchDTO.getId().toString()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                   for(DataSnapshot snapshot: task.getResult().getChildren()){
+                       Log.d("알림", "참여중인 유저: " + snapshot.getKey());
+                       String userId = (String) snapshot.getKey();
 
-        }
+                       firebaseDatabase.getReference().child("Notification").child("ALL_USERS").child(userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                           @Override
+                           public void onComplete(@NonNull Task<DataSnapshot> task) {
+                               if(task.isSuccessful()){
+                                   Log.d("알림", "참여중인 유저 토큰: " + task.getResult().getValue());
+                                   String userNotiToken = (String) task.getResult().getValue();
+
+                                   try {
+                                       sendNoti(openMatchDTO.getSubject(), userId, userNotiToken);
+                                   } catch (JSONException e) {
+                                       e.printStackTrace();
+                                   }
+                               }
+                           }
+                       });
+                   }
+                }
+            }
+        });
+
+
     }
     //해당 오픈매치에 포함되어 있는 유저들에게 알림 발송
-    private void sendNoti(Long openMatchIdx) throws JSONException {
+    private void sendNoti(String openMatchName, String userId, String userNotiToken) throws JSONException {
 
-        JSONObject innerJsonObject = new JSONObject();
-        innerJsonObject.put("title", "앱텟");
-        innerJsonObject.put("body", "aa");
-
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("to", "dNgDuaaXQlC_fLyOv58RGC:APA91bGz1Vrkh73cMB51UDdy_2r_kQQ_IEExB062Su_atSQ4S9JA-lZ9dnT4nnkCV1Zp1nidfLqRDJRuIpGN47yhN4y_MHBnEN2KeOHsQ24v5dhkSF3X-jJu9KvW72d44duPIEEV6REV");
-//        jsonObject.put("priority", "high");
-//        jsonObject.put("notification", innerJsonObject);
+        HashMap<String, String> innerJsonObject = new HashMap<>();
+        innerJsonObject.put("title", "오픈매치 알림");
+        innerJsonObject.put("body", openMatchName + "에 새로운 유저가 참가 했습니다.");
 
         SendNotiDTO sendNotiDTO = new SendNotiDTO();
-        sendNotiDTO.setTo("dNgDuaaXQlC_fLyOv58RGC:APA91bGz1Vrkh73cMB51UDdy_2r_kQQ_IEExB062Su_atSQ4S9JA-lZ9dnT4nnkCV1Zp1nidfLqRDJRuIpGN47yhN4y_MHBnEN2KeOHsQ24v5dhkSF3X-jJu9KvW72d44duPIEEV6REV");
+        sendNotiDTO.setTo(userNotiToken);
         sendNotiDTO.setPriority("high");
         sendNotiDTO.setNotification(innerJsonObject);
 

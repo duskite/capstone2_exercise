@@ -2,6 +2,8 @@ package com.mju.exercise.Domain;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.HashMap;
+
 public class SendNotiDTO {
 
     @SerializedName("to")
@@ -9,7 +11,7 @@ public class SendNotiDTO {
     @SerializedName("priority")
     String priority;
     @SerializedName("notification")
-    Object notification;
+    HashMap<String, String> notification;
 
     public String getTo() {
         return to;
@@ -27,11 +29,11 @@ public class SendNotiDTO {
         this.priority = priority;
     }
 
-    public Object getNotification() {
+    public HashMap<String, String> getNotification() {
         return notification;
     }
 
-    public void setNotification(Object notification) {
+    public void setNotification(HashMap notification) {
         this.notification = notification;
     }
 }

@@ -64,15 +64,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             builder = new NotificationCompat.Builder(getApplicationContext());
         }
 
-        Log.d("알림", "받은거: " + remoteMessage.getData());
-//        String title = remoteMessage.getNotification().getTitle();
-//        String body = remoteMessage.getNotification().getBody();
-//
-//        builder.setContentTitle(title)
-//                .setContentText(body)
-//                .setSmallIcon(R.drawable.ic_launcher_background);
-//
-//        Notification notification = builder.build();
-//        notificationManager.notify(1, notification);
+        String title = remoteMessage.getNotification().getTitle();
+        String body = remoteMessage.getNotification().getBody();
+
+        builder.setContentTitle(title)
+                .setContentText(body)
+                .setSmallIcon(R.drawable.ic_launcher_background);
+
+        Notification notification = builder.build();
+        notificationManager.notify(1, notification);
     }
 }
