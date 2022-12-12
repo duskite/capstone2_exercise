@@ -575,20 +575,20 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
             }
         });
     }
-
+    // 오픈매치 종목별 아이콘
     private void iconReflect(ViewHolder viewHolder, String type){
         if(type.equals("축구")){
-            viewHolder.tvSportType.setImageResource(R.drawable.ic_football);
+            viewHolder.tvSportType.setImageResource(R.drawable.om_football);
         }else if(type.equals("풋살")) {
-            viewHolder.tvSportType.setImageResource(R.drawable.ic_futsal);
+            viewHolder.tvSportType.setImageResource(R.drawable.om_football);
         }else if(type.equals("농구")){
-            viewHolder.tvSportType.setImageResource(R.drawable.ic_basketball);
+            viewHolder.tvSportType.setImageResource(R.drawable.om_basketball);
         }else if(type.equals("야구")){
-            viewHolder.tvSportType.setImageResource(R.drawable.ic_baseball);
+            viewHolder.tvSportType.setImageResource(R.drawable.om_baseball);
         }else if(type.equals("배드민턴")){
-            viewHolder.tvSportType.setImageResource(R.drawable.ic_badminton);
+            viewHolder.tvSportType.setImageResource(R.drawable.om_badminton);
         }else if(type.equals("사이클")){
-            viewHolder.tvSportType.setImageResource(R.drawable.ic_cycle);
+            viewHolder.tvSportType.setImageResource(R.drawable.om_cycle);
         }
 
     }

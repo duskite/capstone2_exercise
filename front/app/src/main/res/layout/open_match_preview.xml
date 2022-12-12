@@ -45,15 +45,18 @@
                     android:id="@+id/omSubject"
                     android:textStyle="bold"
                     android:textSize="20dp"
+                    android:fontFamily="@font/scdream7"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/scdream7"
                     android:id="@+id/omPlayDateTime"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/scdream7"
                     android:id="@+id/omPersonnel"
                     />
                 <TextView
@@ -62,6 +65,7 @@
                     android:layout_gravity="right"
                     android:id="@+id/omDistanceToMe"
                     android:text="나와의 거리: "
+                    android:fontFamily="@font/scdream7"
                     android:layout_marginRight="20dp"
                     />
 
