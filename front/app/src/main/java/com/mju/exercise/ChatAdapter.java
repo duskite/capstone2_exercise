@@ -13,8 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.mju.exercise.Domain.OpenMatchDTO;
 import com.mju.exercise.Domain.ProfileDTO;
 import com.mju.exercise.HttpRequest.RetrofitUtil;
+import com.mju.exercise.OpenMatch.FilterDataLoader;
 import com.mju.exercise.Profile.UserInfoActivity;
 
 import java.text.SimpleDateFormat;
@@ -34,6 +36,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private String myId;
     private Context mContext;
     private RetrofitUtil retrofitUtil;
+    private OnProfileListener onProfileListener;
 
     public ChatAdapter(ArrayList<ChatData.Comment> comments, String myId, String otherName, Context context) {
         this.comments = comments;
@@ -130,16 +133,17 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             show_msg.setText(comment.message);
             time_msg.setText(time);
             name_tv.setText(comment.senderId);
-            loadProfile(comment.senderId, profileImg);
+            if(comment.senderId != null){
+                loadProfile(comment.senderId, profileImg);
+            }
 
-//            //상대 프로필로 넘어가기
-//            profileImg.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Intent intent = new Intent(mContext, UserInfoActivity.class);
-//                    intent.putExtra("userId", comment.senderId);
-//                }
-//            });
+            //상대 프로필로 넘어가기
+            profileImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onProfileListener.goProfile(comment.senderId);
+                }
+            });
         }
     }
 
@@ -151,24 +155,37 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     //프로필 가져오기
     private void loadProfile(String nickName, ImageView imageView){
-        Log.d("프로필로드", "넘어온 닉네임: " + nickName);
         retrofitUtil.getRetrofitAPI().getUserProfileImgByNickName(nickName).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                if(response.isSuccessful()){
-                    String path = response.body();
-                    if(path != null){
-                        //프로필 이미지 변경
-                        setProfileImg(path, imageView);
+                try{
+                    Log.d("채팅프로필", String.valueOf(response.code()));
+                    if(response.isSuccessful()){
+                        String path = response.body();
+                        if(path != null){
+                            //프로필 이미지 변경
+                            setProfileImg(path, imageView);
+                        }
                     }
+                }catch (NullPointerException e){
+                    //프로필 이미지 없는 애들
                 }
+
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-
+                Log.d("채팅프로필", t.getMessage());
             }
         });
 
     }
+
+    public void setOnProfileListener(OnProfileListener onProfileListener){
+        this.onProfileListener = onProfileListener;
+    }
+    public interface OnProfileListener {
+        void goProfile(String nickname);
+    }
+
 }

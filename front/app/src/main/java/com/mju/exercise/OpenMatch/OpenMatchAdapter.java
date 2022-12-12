@@ -193,7 +193,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
 //                        Log.i("HH_LOG", "onResponse: smallp = "+ userNick.getNickname());
 //                    }
                     Intent intent = new Intent(getContext(), ChatActivity.class);
-                    intent.putExtra("groupTitle",openMatchDTO.getArticle());
+                    intent.putExtra("groupTitle", String.valueOf(openMatchDTO.getId()));
                     getContext().startActivity(intent);
                 }
             });

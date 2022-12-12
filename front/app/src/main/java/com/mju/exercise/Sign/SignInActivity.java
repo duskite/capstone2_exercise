@@ -113,6 +113,9 @@ public class SignInActivity extends AppCompatActivity {
                                             preferenceUtil.setString("accessToken", resultBody.getString("accessToken"));
                                             preferenceUtil.setString("userId", edtId.getText().toString());
 
+                                            //닉네임 가져오기
+                                            loadProfileIngo(edtId.getText().toString());
+
                                             retrofitUtil.getRetrofitAPI().getUserIndexByUserId(preferenceUtil.getString("userId")).enqueue(new Callback<Long>() {
                                                 @Override
                                                 public void onResponse(Call<Long> call, Response<Long> response) {
@@ -165,4 +168,22 @@ public class SignInActivity extends AppCompatActivity {
 
 
     };
+
+    private void loadProfileIngo(String userId){
+        retrofitUtil.getRetrofitAPI().getUserProfile(userId).enqueue(new Callback<ProfileDTO>() {
+            @Override
+            public void onResponse(Call<ProfileDTO> call, Response<ProfileDTO> response) {
+                if(response.isSuccessful()){
+                    preferenceUtil.setString("nickname", response.body().getNickname());
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProfileDTO> call, Throwable t) {
+
+            }
+        });
+
+    }
 }
