@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.mju.exercise.Preference.PreferenceUtil;
+import com.mju.exercise.Profile.UserInfoActivity;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -136,7 +137,10 @@ public class ChatActivity extends AppCompatActivity {
                         chatAdapter = new ChatAdapter(comments, myNickname, otherNickname, getApplicationContext());
                         chatAdapter.setOnProfileListener(new ChatAdapter.OnProfileListener() {
                             @Override
-                            public void goProfile(String nickname) {
+                            public void goProfile(String userId) {
+                                Intent intent = new Intent(getApplicationContext(), UserInfoActivity.class);
+                                intent.putExtra("userId", userId);
+                                startActivity(intent);
 
                             }
                         });
@@ -171,8 +175,10 @@ public class ChatActivity extends AppCompatActivity {
                             chatAdapter = new ChatAdapter(comments, myNickname, otherNickname, getApplicationContext());
                             chatAdapter.setOnProfileListener(new ChatAdapter.OnProfileListener() {
                                 @Override
-                                public void goProfile(String nickname) {
-
+                                public void goProfile(String userId) {
+                                    Intent intent = new Intent(getApplicationContext(), UserInfoActivity.class);
+                                    intent.putExtra("userId", userId);
+                                    startActivity(intent);
                                 }
                             });
                             getChatting();

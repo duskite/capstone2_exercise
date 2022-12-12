@@ -141,7 +141,19 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             profileImg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onProfileListener.goProfile(comment.senderId);
+                    retrofitUtil.getRetrofitAPI().getUserIdByNickName(comment.senderId).enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            if(response.isSuccessful()){
+                                onProfileListener.goProfile(response.body());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+
+                        }
+                    });
                 }
             });
         }
@@ -185,7 +197,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.onProfileListener = onProfileListener;
     }
     public interface OnProfileListener {
-        void goProfile(String nickname);
+        void goProfile(String userId);
     }
 
 }
