@@ -40,7 +40,7 @@ public class ChatActivity extends AppCompatActivity {
     private TextView chatTitle;
     private String myNickname, myId;
     private String chatRoomUid; //채팅방 하나 id
-    private String groupTitle; //채팅방 하나 id
+    private String groupTitle, openMatchName; //채팅방 하나 id
     private ChatAdapter chatAdapter;
     RecyclerView chatRecyclerView;
 
@@ -54,6 +54,7 @@ public class ChatActivity extends AppCompatActivity {
         String otherNickname = i.getStringExtra("otherNickname");
 
         groupTitle = i.getStringExtra("groupTitle");
+        openMatchName = i.getStringExtra("openMatchName");
 
         initView();
         checkChatRoom(otherNickname);
@@ -121,7 +122,7 @@ public class ChatActivity extends AppCompatActivity {
         comments = new ArrayList<>(); //채팅 메시지
 
         if (groupTitle != null) {
-            chatTitle.setText(groupTitle);
+            chatTitle.setText(openMatchName);
 
             //단체채팅
             firebaseDatabase.getReference().child("groupChat").orderByChild(groupTitle).addListenerForSingleValueEvent(new ValueEventListener() {

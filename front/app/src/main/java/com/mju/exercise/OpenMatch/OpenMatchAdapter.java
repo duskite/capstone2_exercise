@@ -194,6 +194,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
 //                    }
                     Intent intent = new Intent(getContext(), ChatActivity.class);
                     intent.putExtra("groupTitle", String.valueOf(openMatchDTO.getId()));
+                    intent.putExtra("openMatchName", openMatchDTO.getSubject());
                     getContext().startActivity(intent);
                 }
             });
