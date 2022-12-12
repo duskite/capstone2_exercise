@@ -18,8 +18,8 @@ import com.mju.exercise.R;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    private static final String CHANNEL_ID = "exercise";
-    private static final CharSequence CHANNEL_NAME = "noti";
+    private static final String CHANNEL_ID = "스포츠 메이트";
+    private static final CharSequence CHANNEL_NAME = "notification";
     private FirebaseDatabase firebaseDatabase;
     private PreferenceUtil preferenceUtil;
 

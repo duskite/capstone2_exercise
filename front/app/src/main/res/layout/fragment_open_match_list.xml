@@ -6,9 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".OpenMatch.OpenMatchListFrag">
 
-    <LinearLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/refresh_layout"
         android:orientation="vertical">
         
         <ListView
@@ -17,7 +18,7 @@
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             ></ListView>
-    </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 </FrameLayout>

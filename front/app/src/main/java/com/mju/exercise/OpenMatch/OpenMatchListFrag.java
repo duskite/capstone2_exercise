@@ -3,6 +3,7 @@ package com.mju.exercise.OpenMatch;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,12 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link OpenMatchListFrag#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
+public class OpenMatchListFrag extends Fragment implements OpenMatchFilter, SwipeRefreshLayout.OnRefreshListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,6 +37,7 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
     ListView customListView;
     RetrofitUtil retrofitUtil;
     OpenMatchAdapter openMatchAdapter;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     ArrayList<OpenMatchDTO> tmpList = new ArrayList<>();
 
@@ -89,6 +86,8 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
         View view = inflater.inflate(R.layout.fragment_open_match_list, container, false);
 
         customListView = (ListView) view.findViewById(R.id.listViewOpenMatchList);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         // Inflate the layout for this fragment
         return view;
@@ -331,5 +330,14 @@ public class OpenMatchListFrag extends Fragment implements OpenMatchFilter{
             }
         });
         filterDataLoader.getDataCanJoin(pastList);
+    }
+
+    @Override
+    public void onRefresh() {
+        openMatches.clear();
+        loadOpenMatchesSportType(sportTypeToString(mSportType));
+        openMatchAdapter.notifyDataSetChanged();
+
+        swipeRefreshLayout.setRefreshing(false);
     }
 }
