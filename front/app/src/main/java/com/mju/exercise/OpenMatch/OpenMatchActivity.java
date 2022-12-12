@@ -113,6 +113,10 @@ public class OpenMatchActivity extends AppCompatActivity {
             switch (view.getId()){
                 case R.id.btnFilterOpen:
 
+                    if(fragType == Status.FragType.NOTICE){
+                        return;
+                    }
+
                     FilteringDialog filteringDialog = new FilteringDialog();
                     filteringDialog.show(getSupportFragmentManager(), "filtering");
                     filteringDialog.setDialogResult(new OpenMatchFilter() {
@@ -208,6 +212,7 @@ public class OpenMatchActivity extends AppCompatActivity {
                     if(loginCheck()){
                         fragmentTransaction.replace(R.id.host_fragment, new OpenMatchOpenFrag())
                                 .commit();
+                        fragType = Status.FragType.NOTICE;
                     }else{
                         fragmentTransaction.replace(R.id.host_fragment, new LoginNoticeFrag())
                                 .commit();
