@@ -45,6 +45,7 @@
                         android:layout_weight="3"
                         android:gravity="center"
                         android:text="닉네임"
+                        android:fontFamily="@font/scdream7"
                         android:textColor="@color/black"
                         android:textSize="20dp"
                         android:textStyle="bold" />
@@ -187,20 +188,22 @@
         android:layout_height="70dp"
         android:orientation="horizontal"
         android:layout_margin="0dp"
+        android:gravity="right"
         >
 
-    <Button
+        <Button
+            android:id="@+id/btnOneChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="채팅 보내기" />
+        <Button
         android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="로그아웃" />
-    <Button
-        android:id="@+id/btnOneChat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="채팅 보내기" />
+
 
     </LinearLayout>
 

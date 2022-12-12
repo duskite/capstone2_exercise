@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="비밀번호 재설정"
+            android:fontFamily="@font/scdream7"
             android:textSize="30dp"
             android:layout_margin="10dp"
             android:gravity="center"

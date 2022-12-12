@@ -15,7 +15,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="right"
         >
+        <Button
+            android:id="@+id/btnPositive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="확인"
+            />
+        
         <Button
             android:id="@+id/btnNegative"
             android:layout_width="wrap_content"
@@ -24,12 +32,7 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             />
 
-        <Button
-            android:id="@+id/btnPositive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="확인"
-            />
+
 
     </LinearLayout>
 

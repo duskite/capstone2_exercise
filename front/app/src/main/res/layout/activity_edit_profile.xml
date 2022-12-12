@@ -46,6 +46,7 @@
                         android:gravity="center|left"
                         android:text="닉네임"
                         android:textColor="@color/black"
+                        android:fontFamily="@font/scdream7"
                         android:textSize="20dp"
                         android:textStyle="bold" />
 
@@ -255,6 +256,7 @@
             android:layout_height="wrap_content"
             android:text="수정완료"
             android:id="@+id/btnEnter"
+            android:layout_gravity="right"
             />
     </LinearLayout>
 

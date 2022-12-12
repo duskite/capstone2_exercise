@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:textSize="40dp"
         android:gravity="center"
+        android:fontFamily="@font/scdream7"
         android:text="로그인 필수" />
 
 </FrameLayout>

@@ -12,6 +12,7 @@
         android:layout_weight="1"
         android:text="필터링"
         android:textSize="35dp"
+        android:fontFamily="@font/scdream7"
         android:gravity="center"
         />
 
