@@ -40,7 +40,7 @@ public interface RetrofitAPI {
     //닉에임으로 프로필 이미지만 가져오기
     @Headers({"Content-Type: application/json"})
     @GET("/api/user/getUserProfileImgByNickName/{nickName}")
-    Call<String> getUserProfileImgByNickName(@Path(value="nickName", encoded = true) String nickName);
+    Call<List<String>> getUserProfileImgByNickName(@Path(value="nickName", encoded = true) String nickName);
     @Headers({"Content-Type: application/json"})
     @GET("/api/user/getUserIdByNickName/{nickName}")
     Call<String> getUserIdByNickName(@Path(value = "nickName", encoded = true) String nickName);

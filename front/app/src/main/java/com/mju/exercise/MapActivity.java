@@ -346,41 +346,44 @@ public class MapActivity extends AppCompatActivity implements NaverMap.OnMapClic
         @Override
         protected void onPostExecute(String s) { //데이터 파싱 종료후
             super.onPostExecute(s);
-            dialog= new ProgressDialog(MapActivity.this);
-            dialog.setTitle(TypeDTO.type+"");
-            dialog.setMessage(TypeDTO.type+"장을 검색중입니다");
-            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
-            Handler handler = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    for(int i = 1; i < list.size(); i++) {
-                        Marker marker = new Marker();
-                        LatLng LtLg = new LatLng(Double.valueOf(list.get(i).getFaciPointY()), Double.valueOf(list.get(i).getFaciPointX()));
-                        marker.setTag(i+"."+list.get(i).getFaciNm());
-                        marker.setPosition(LtLg);
-                        marker.setAnchor(new PointF(0.5f, 1.0f));
-                        marker.setMap(naverMap);
-                        //마커 크기, 색상 설정
-                        marker.setWidth(75);
-                        marker.setHeight(100);
-                        marker.setIcon(MarkerIcons.BLACK);
-                        marker.setIconTintColor(Color.RED);
-                        marker.setOnClickListener(MapActivity.this);
+            if(TypeDTO.type == null){
+                return;
+            }
+            try{
+                dialog= new ProgressDialog(MapActivity.this);
+                dialog.setTitle(TypeDTO.type+"");
+                dialog.setMessage(TypeDTO.type+"장을 검색중입니다");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+                Handler handler = new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        for(int i = 1; i < list.size(); i++) {
+                            Marker marker = new Marker();
+                            LatLng LtLg = new LatLng(Double.valueOf(list.get(i).getFaciPointY()), Double.valueOf(list.get(i).getFaciPointX()));
+                            marker.setTag(i+"."+list.get(i).getFaciNm());
+                            marker.setPosition(LtLg);
+                            marker.setAnchor(new PointF(0.5f, 1.0f));
+                            marker.setMap(naverMap);
+                            //마커 크기, 색상 설정
+                            marker.setWidth(75);
+                            marker.setHeight(100);
+                            marker.setIcon(MarkerIcons.BLACK);
+                            marker.setIconTintColor(Color.RED);
+                            marker.setOnClickListener(MapActivity.this);
+                        }
+                        dialog.dismiss();
+                        dialog = null;
                     }
-                    dialog.dismiss();
-                    dialog = null;
-                }
-            };
-            handler.sendEmptyMessageDelayed(0, 3000);
+                };
+                handler.sendEmptyMessageDelayed(0, 3000);
 
+            }catch (Exception e){
 
-
-
+            }
         }
     }
-
 
 
 }

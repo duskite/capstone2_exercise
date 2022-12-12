@@ -22,6 +22,7 @@ import com.mju.exercise.Profile.UserInfoActivity;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import retrofit2.Call;
@@ -134,6 +135,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             time_msg.setText(time);
             name_tv.setText(comment.senderId);
             if(comment.senderId != null){
+                Log.d("채팅프로필", "센더이름: " + comment.senderId);
                 loadProfile(comment.senderId, profileImg);
             }
 
@@ -162,32 +164,39 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private void setProfileImg(String path, ImageView imageView){
         String url = retrofitUtil.getBASE_URL_NONE_SLASH() + path;
         Log.d("채팅프로필", url);
-        Glide.with(mContext).load(url).into(imageView);
+        Glide.with(mContext).load(url).circleCrop().into(imageView);
     }
 
     //프로필 가져오기
     private void loadProfile(String nickName, ImageView imageView){
-        retrofitUtil.getRetrofitAPI().getUserProfileImgByNickName(nickName).enqueue(new Callback<String>() {
+        Log.d("채팅프로필", "닉네임: " + nickName);
+        retrofitUtil.getRetrofitAPI().getUserIdByNickName(nickName).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                try{
-                    Log.d("채팅프로필", String.valueOf(response.code()));
-                    if(response.isSuccessful()){
-                        String path = response.body();
-                        if(path != null){
-                            //프로필 이미지 변경
-                            setProfileImg(path, imageView);
+                if(response.isSuccessful()){
+                    response.body();
+                    Log.d("채팅프로필", response.body());
+                    retrofitUtil.getRetrofitAPI().getUserProfile(response.body()).enqueue(new Callback<ProfileDTO>() {
+                        @Override
+                        public void onResponse(Call<ProfileDTO> call, Response<ProfileDTO> response) {
+                            if(response.isSuccessful()){
+                                Log.d("채팅프로필", "프로필 성공");
+                                setProfileImg(response.body().getImage(), imageView);
+                            }
                         }
-                    }
-                }catch (NullPointerException e){
-                    //프로필 이미지 없는 애들
-                }
 
+                        @Override
+                        public void onFailure(Call<ProfileDTO> call, Throwable t) {
+                            Log.d("채팅프로필", "프로필 실패");
+
+                        }
+                    });
+                }
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.d("채팅프로필", t.getMessage());
+                Log.d("채팅프로필", "실패");
             }
         });
 
