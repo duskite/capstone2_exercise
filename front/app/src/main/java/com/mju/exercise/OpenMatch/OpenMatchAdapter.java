@@ -505,7 +505,7 @@ public class OpenMatchAdapter extends ArrayAdapter implements AdapterView.OnItem
 
             }
         });
-        
+
         viewHolder.tvPlayDateTime.setText(String.valueOf(openMatchDTO.getPlayDateTime()));
         if(!preferenceUtil.getString("lat").equals("") && !preferenceUtil.getString("lng").equals("")){
             viewHolder.myLat = Double.valueOf(preferenceUtil.getString("lat"));

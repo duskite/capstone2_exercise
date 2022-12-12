@@ -109,6 +109,16 @@ public class MemberController {
         return memberService.findProfileByUserId(userId);
     }
 
+    //닉네임으로 프로필 이미지 조회
+    @GetMapping("/getUserProfileImgByNickName/{nickName}")
+    public String getUserProfileImgByNickName(@PathVariable String nickName){
+        Profile profile = memberService.findProfileByNickname(nickName);
+        String path = profile.getImage();
+        return path;
+    }
+
+
+
     //유저 인덱스 조회
     @GetMapping("/getUserIndexByUserId/{userId}")
     public Long getUserIndexByUserId(@PathVariable String userId){

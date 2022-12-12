@@ -37,6 +37,11 @@ public interface RetrofitAPI {
     @Headers({"Content-Type: application/json"})
     @GET("/api/user/getUserProfile/{userId}")
     Call<ProfileDTO> getUserProfile(@Path(value="userId", encoded = true) String userId);
+    //닉에임으로 프로필 이미지만 가져오기
+    @Headers({"Content-Type: application/json"})
+    @GET("/api/user/getUserProfileImgByNickName/{nickName}")
+    Call<String> getUserProfileImgByNickName(@Path(value="nickName", encoded = true) String nickName);
+
     @Headers({"Content-Type: application/json"})
     @GET("/api/user/getUserIndexByUserId/{userId}")
     Call<Long> getUserIndexByUserId(@Path(value="userId", encoded = true) String userId);
