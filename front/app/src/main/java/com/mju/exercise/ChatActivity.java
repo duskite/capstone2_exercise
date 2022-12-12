@@ -130,7 +130,7 @@ public class ChatActivity extends AppCompatActivity {
                         chatRoomUid = dataSnapshot.getKey();
                         btn_send.setEnabled(true);
 
-                        chatAdapter = new ChatAdapter(comments, myNickname, otherNickname);
+                        chatAdapter = new ChatAdapter(comments, myNickname, otherNickname, getApplicationContext());
                         getChatting();
                         //동기화
                         chatRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
@@ -159,7 +159,7 @@ public class ChatActivity extends AppCompatActivity {
                             Log.i(TAG, "onDataChange: chatRoomUid = " + chatRoomUid);
                             btn_send.setEnabled(true);
 
-                            chatAdapter = new ChatAdapter(comments, myNickname, otherNickname);
+                            chatAdapter = new ChatAdapter(comments, myNickname, otherNickname, getApplicationContext());
                             getChatting();
                             //동기화
                             chatRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));

@@ -12,5 +12,6 @@ public class ChatData {
         public String senderId;
         public String message;
         public Object timestamp;
+        public String profileImgPath;
     }
 }
