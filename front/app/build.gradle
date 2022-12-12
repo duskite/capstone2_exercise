@@ -63,6 +63,9 @@ dependencies {
     //firebase messaging
     implementation 'com.google.firebase:firebase-messaging:21.1.0'
 
+    //당겨서 새로고침
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
 
 
 }

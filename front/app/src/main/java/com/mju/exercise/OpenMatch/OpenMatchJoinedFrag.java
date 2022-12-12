@@ -3,6 +3,7 @@ package com.mju.exercise.OpenMatch;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,7 +30,7 @@ import retrofit2.Response;
  * Use the {@link OpenMatchJoinedFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OpenMatchJoinedFrag extends Fragment implements OpenMatchFilter {
+public class OpenMatchJoinedFrag extends Fragment implements OpenMatchFilter, SwipeRefreshLayout.OnRefreshListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -45,6 +46,7 @@ public class OpenMatchJoinedFrag extends Fragment implements OpenMatchFilter {
     RetrofitUtil retrofitUtil;
     OpenMatchAdapter openMatchAdapter;
     PreferenceUtil preferenceUtil;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     ArrayList<OpenMatchDTO> tmpList = new ArrayList<>();
 
@@ -86,6 +88,8 @@ public class OpenMatchJoinedFrag extends Fragment implements OpenMatchFilter {
         View view = inflater.inflate(R.layout.fragment_open_match_list, container, false);
 
         customListView = (ListView) view.findViewById(R.id.listViewOpenMatchList);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         // Inflate the layout for this fragment
         return view;
@@ -307,5 +311,14 @@ public class OpenMatchJoinedFrag extends Fragment implements OpenMatchFilter {
             }
         });
         filterDataLoader.getDataCanJoin(pastList);
+    }
+
+    @Override
+    public void onRefresh() {
+        openMatches.clear();
+        loadOpenMatchesJoined();
+        openMatchAdapter.notifyDataSetChanged();
+
+        swipeRefreshLayout.setRefreshing(false);
     }
 }
