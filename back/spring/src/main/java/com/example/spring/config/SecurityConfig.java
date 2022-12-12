@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/imagePath/**","/api/auth/**", "/api/user/signUp", "/api/user/forgetPassword", "/api/user/getUserProfile/**", "/api/**","/api/match/**","/api/match/openMatch","/api/match/openMatchList/**", "/api/match/leaveMatch","/api/user/changePw/**", "/api/match/leaveAllMatchUser/**",
-                        "/api/user/getUserProfileImgByNickName/**").permitAll()
+                        "/api/user/getUserProfileImgByNickName/**", "/api/user/getUserIdByNickName/**").permitAll()
 //                .antMatchers("/api/user/**").authenticated()
                 .and()
                 .exceptionHandling()

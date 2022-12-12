@@ -44,6 +44,11 @@ public class MemberService {
         return memberRepository.findProfileByNickname(nickname).get();
     }
 
+    public String findUserIdByNickname(String nickName){
+        Profile profile = memberRepository.findUserIdByNickname(nickName).get();
+        return profile.getUserId();
+    }
+
 
     public Profile findProfileByUserId(String userId){
         return memberRepository.findProfileByUserId(userId).get();

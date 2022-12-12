@@ -99,6 +99,15 @@ public class JpaMemberRepository implements MemberRepository {
     }
 
     @Override
+    public Optional<Profile> findUserIdByNickname(String nickname) {
+        List<Profile> result = em.createQuery("select m from Profile m where m.nickname = :nickname", Profile.class)
+                .setParameter("nickname", nickname)
+                .getResultList();
+
+        return result.stream().findAny();
+    }
+
+    @Override
     public Optional<Profile> findProfileByNickname(String nickname) {
 
         List<Profile> result = em.createQuery("select m from Profile m where m.nickname = :nickname", Profile.class)

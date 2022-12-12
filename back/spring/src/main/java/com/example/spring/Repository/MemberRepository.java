@@ -18,6 +18,7 @@ public interface MemberRepository {
     Optional<Profile> findProfileByNickname(String nickname);
 
     Optional<Profile> findProfileById(Long id);
+    Optional<Profile> findUserIdByNickname(String nickname);
 
     boolean delete(Member member);
     boolean changePw(Long id, String newPw);

@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.mju.exercise.Preference.PreferenceUtil;
+import com.mju.exercise.Profile.UserInfoActivity;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -37,7 +38,7 @@ public class ChatActivity extends AppCompatActivity {
     private ImageButton btn_send;
     private EditText text_send;
     private TextView chatTitle;
-    private String myNickname;
+    private String myNickname, myId;
     private String chatRoomUid; //채팅방 하나 id
     private String groupTitle; //채팅방 하나 id
     private ChatAdapter chatAdapter;
@@ -67,9 +68,12 @@ public class ChatActivity extends AppCompatActivity {
         chatRecyclerView = findViewById(R.id.recycler_view);
         chatTitle = findViewById(R.id.username);
 
+        preferenceUtil = PreferenceUtil.getInstance(getApplicationContext());
+        myId = preferenceUtil.getString("userId");
+        myNickname = preferenceUtil.getString("nickname");
 
-        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);    // test 이름의 기본모드 설정, 만약 test key값이 있다면 해당 값을 불러옴.
-        myNickname = sharedPreferences.getString("userNickname", "");
+//        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);    // test 이름의 기본모드 설정, 만약 test key값이 있다면 해당 값을 불러옴.
+//        myNickname = sharedPreferences.getString("userNickname", "");
     }
 
     private void createChatting(String otherId, String otherNickname) {
@@ -131,6 +135,15 @@ public class ChatActivity extends AppCompatActivity {
                         btn_send.setEnabled(true);
 
                         chatAdapter = new ChatAdapter(comments, myNickname, otherNickname, getApplicationContext());
+                        chatAdapter.setOnProfileListener(new ChatAdapter.OnProfileListener() {
+                            @Override
+                            public void goProfile(String userId) {
+                                Intent intent = new Intent(getApplicationContext(), UserInfoActivity.class);
+                                intent.putExtra("userId", userId);
+                                startActivity(intent);
+
+                            }
+                        });
                         getChatting();
                         //동기화
                         chatRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
@@ -160,6 +173,14 @@ public class ChatActivity extends AppCompatActivity {
                             btn_send.setEnabled(true);
 
                             chatAdapter = new ChatAdapter(comments, myNickname, otherNickname, getApplicationContext());
+                            chatAdapter.setOnProfileListener(new ChatAdapter.OnProfileListener() {
+                                @Override
+                                public void goProfile(String userId) {
+                                    Intent intent = new Intent(getApplicationContext(), UserInfoActivity.class);
+                                    intent.putExtra("userId", userId);
+                                    startActivity(intent);
+                                }
+                            });
                             getChatting();
                             //동기화
                             chatRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));

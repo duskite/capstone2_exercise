@@ -116,6 +116,11 @@ public class MemberController {
         String path = profile.getImage();
         return path;
     }
+    //닉네임으로 userId 조회
+    @GetMapping("/getUserIdByNickName/{nickName}")
+    public String getUserIdByNickName(@PathVariable String nickName){
+        return memberService.findUserIdByNickname(nickName);
+    }
 
 
 
