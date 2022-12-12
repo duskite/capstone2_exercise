@@ -140,11 +140,14 @@
         android:gravity="center|center_horizontal"
         >
         <Button
-
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnLoginOrUserInfo"
             android:textSize="30dp"
+            android:drawableLeft="@drawable/loginxml"
+            android:fontFamily="@font/scdream7"
+            android:background="#00ff0000"
+            android:textColor="@color/black"
             android:layout_margin="10dp"
             />
     </LinearLayout>
